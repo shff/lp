@@ -36,3 +36,7 @@ shards:
     github: luislavena/radix
     version: 0.3.8
 
+  raze:
+    github: samueleaton/raze
+    version: 0.3.0
+

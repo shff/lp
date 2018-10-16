@@ -4,6 +4,8 @@ targets:
   app:
     main: app.cr
 dependencies:
+  raze:
+    github: samueleaton/raze
   kemal:
     github: kemalcr/kemal
   granite:

@@ -1,4 +1,4 @@
-require "kemal"
+require "raze"
 require "granite"
 require "granite/adapter/pg"
 require "jwt"
@@ -115,44 +115,42 @@ class Pages::Template < Granite::Base
   has_many pages : Page
 end
 
-before_all do |env|
-  env.response.content_type = "application/json"
+post "/user/signup" do |ctx|
+  body = JSON.parse(ctx.request.body.not_nil!.gets_to_end)
+  email = body["email"].to_s
+  password = body["password"].to_s
+
+  ctx.halt "error", 409 if User.first("WHERE email = ?", email)
+
+  User.create!(email: email, password: password.to_hash)
+  "ok"
 end
 
-post "/user/signup" do |env|
-  email = env.params.body["email"]
-  password = env.params.body["password"]
+post "/user/login" do |ctx|
+  body = JSON.parse(ctx.request.body.not_nil!.gets_to_end)
+  email = body["email"].to_s
+  password = body["password"].to_s
 
-  halt env, 409 if User.first("WHERE email = ?", email)
-
-  hash = Crypto::Bcrypt::Password.create(password).to_s
-  User.create!(email: email, password: hash)
-end
-
-post "/user/login" do |env|
-  email = env.params.body["email"]
-  password = env.params.body["password"]
-
-  halt env, 409 unless user = User.first("WHERE email = ?", email)
-  halt env, 403 unless user.hash == password
+  ctx.halt "error", 409 unless user = User.first("WHERE email = ?", email)
+  ctx.halt "error", 403 unless user.hash == password
 
   JWT.encode({id: user.id}, ENV["SECRET"], "HS256") if user
 end
 
-put "/user/password" do |env|
-  email = env.params.body["email"]
-  password = env.params.body["password"]
-  new_password = env.params.body["new_password"]
-  hash = Crypto::Bcrypt::Password.create(new_password).to_s
+put "/user/password" do |ctx|
+  body = JSON.parse(ctx.request.body.not_nil!.gets_to_end)
+  email = body["email"].to_s
+  password = body["password"].to_s
+  new_password = body["new_password"].to_s
 
-  halt env, 409 unless user = User.first("WHERE email = ?", email)
-  halt env, 403 unless user.hash == password
+  ctx.halt "error", 409 unless user = User.first("WHERE email = ?", email)
+  ctx.halt "error", 403 unless user.hash == password
 
-  user.update!(password: hash)
+  # user.update!(password: new_password.to_hash)
 end
 
 get "/projects" do |env|
   View::Permission.of(env.current_user).to_json
 end
 
-Kemal.run
+Raze.run
