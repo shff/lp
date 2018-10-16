@@ -1,4 +1,4 @@
-name: lp
+name: roadie
 version: 0.1
 targets:
   app:
@@ -6,18 +6,14 @@ targets:
 dependencies:
   kemal:
     github: kemalcr/kemal
-  granite:
-    github: amberframework/granite
-    version: 0.14.0
+  jennifer:
+    github: imdrasil/jennifer.cr
   jwt:
     github: crystal-community/jwt
     version: 0.3.0
-  pg:
-    github: will/crystal-pg
-    version: 0.15.0
   micrate:
     github: amberframework/micrate
     version: 0.3.3
-  dotenv:
-    github: gdotdesign/cr-dotenv
-    version: 0.1.0
+  pg:
+    github: will/crystal-pg
+    version: 0.15.0

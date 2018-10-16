@@ -1,0 +1,33 @@
+name: granite
+
+version: 0.14.0
+
+crystal: 0.26.0
+
+authors:
+  - drujensen <drujensen@gmail.com>
+  - elorest <isaac@isaacsloan.com>
+
+license: MIT
+
+dependencies:
+  db:
+    github: crystal-lang/crystal-db
+    version: ~> 0.5.0
+
+development_dependencies:
+  mysql:
+    github: crystal-lang/crystal-mysql
+    version: ~> 0.5.0
+
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
+    version: ~> 0.10.0
+
+  pg:
+    github: will/crystal-pg
+    version: ~> 0.15.0
+
+  ameba:
+    github: veelenga/ameba
+    version: ~> 0.7.0

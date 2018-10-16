@@ -1,19 +1,27 @@
 require "kemal"
-require "granite"
-require "granite/adapter/pg"
+require "jennifer"
+require "jennifer/adapter/postgres"
 require "jwt"
-require "dotenv"
 
 require "oauth2"
 require "crypto/bcrypt"
 
-Dotenv.load!
-Granite::Adapters << Granite::Adapter::Pg.new({name: "pg", url: ENV["DATABASE_URL"]})
+Jennifer::Config.configure do |config|
+  config.from_uri("postgres://root@localhost/roadie")
+end
 
-def current_user(env)
-  token = env.request.headers["Authorization"].gsub("Bearer ", "")
-  data, header = JWT.decode(token, ENV["SECRET"], "HS256")
-  data["id"]
+class HTTP::Server
+  class Context
+    def current_user
+      token = request.headers.fetch("Authorization", nil)
+      data, header = JWT.decode(token.gsub("Bearer ", ""), ENV["SECRET"], "HS256") if token
+      data[:id] if token && data
+    end
+  end
+end
+
+before_all do |env|
+  env.response.content_type = "application/json"
 end
 
 require "./app/models/**"

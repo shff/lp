@@ -1,10 +1,13 @@
-class Permission < Granite::Base
-  adapter pg
-  field admin : Bool
-  field starts_at : Time
-  field deleted_at : Time
-  timestamps
+class Permission < Jennifer::Model::Base
+  mapping(
+    id: Primary64,
+    admin: Bool,
+    starts_at: Time,
+    deleted_at: Time?,
+  )
 
-  belongs_to user : User
-  belongs_to project : Project
+  with_timestamps
+
+  belongs_to :user, User
+  belongs_to :project, Project
 end

@@ -1,9 +1,12 @@
-class Pages::Template < Granite::Base
-  adapter pg
-  field title : String
-  field deleted_at : Time
-  timestamps
+class Pages::Template < Jennifer::Model::Base
+  mapping(
+    id: Primary64,
+    title: String,
+    deleted_at: Time?,
+  )
 
-  belongs_to project : Project
-  has_many pages : Page
+  with_timestamps
+
+  belongs_to :project, Project
+  has_many :pages, Page
 end

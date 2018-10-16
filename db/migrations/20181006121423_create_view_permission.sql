@@ -1,23 +1,23 @@
 -- +micrate Up
 -- SQL in section 'Up' is executed when this migration is applied
-create view view_permission as
+create view v_user_projects as
 select
-  permission.id as id,
-  "user".id as user_id,
-  project.id as project_id,
-  permission.admin as admin,
-  "user".email as user_email,
-  project.title as project_title,
-  project.domain as project_domain
-from permission
-join "user" on permission.user_id = "user".id
-join project on permission.project_id = project.id
-where permission.starts_at < now()
-and (permission.deleted_at is null or permission.deleted_at > now())
-and project.deleted_at is null
-and "user".deleted_at is null;
+  permissions.id as id,
+  users.id as user_id,
+  projects.id as project_id,
+  permissions.admin as admin,
+  users.email as user_email,
+  projects.title as project_title,
+  projects.domain as project_domain
+from permissions
+join users on permissions.user_id = users.id
+join projects on permissions.project_id = projects.id
+where permissions.starts_at < now()
+and (permissions.deleted_at is null or permissions.deleted_at > now())
+and projects.deleted_at is null
+and users.deleted_at is null;
 
 -- +micrate Down
 -- SQL section 'Down' is executed when this migration is rolled back
 
-drop view view_permission;
+drop view v_user_projects;

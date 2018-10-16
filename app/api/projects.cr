@@ -1,3 +1,3 @@
 get "/projects" do |env|
-  View::Permission.of(current_user(env)).to_json
+  Views::VUserProjects.where { _user_id == env.current_user }
 end

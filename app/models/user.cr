@@ -1,14 +1,18 @@
-class User < Granite::Base
-  adapter pg
-  field email : String
-  field password : String
-  field deleted_at : Time
-  timestamps
+class User < Jennifer::Model::Base
+  mapping(
+    id: Primary64,
+    email: String,
+    password: String,
+    deleted_at: Time?,
+    updated_at: Time?,
+    created_at: Time,
+  )
 
-  has_many permissions : Permission
+  with_timestamps
 
-  def self.try(email, pass)
-    user = User.first("WHERE email = ?", email)
-    user if user && Crypto::Bcrypt::Password.new(raw_hash: user.password || "") == pass
+  has_many :permissions, Permission
+
+  def hash
+    Crypto::Bcrypt::Password.new(raw_hash: password || "")
   end
 end

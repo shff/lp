@@ -1,14 +1,24 @@
-class View::Permission < Granite::Base
-  adapter pg
-  field admin : Bool
-  field user_email : String
-  field project_title : String
-  field project_domain : String
+class Views::VUserProjects < Jennifer::Model::Base
+  mapping(
+    id: Primary64,
+    user_id: Int64,
+    project_id: Int64,
+    admin: Bool,
+    user_email: String,
+    project_title: String,
+    project_domain: String,
+  )
 
-  belongs_to user : User
-  belongs_to project : Project
+  with_timestamps
 
-  def self.of(user_id)
-    View::Permission.all("WHERE user_id = ?", user_id)
+  belongs_to :user, User
+  belongs_to :project, Project
+
+  def to_json(json : JSON::Builder)
+    json.object do
+      json.field "project_id", @project_id
+      json.field "admin", @admin
+      json.field "project_title", @project_title
+    end
   end
 end
